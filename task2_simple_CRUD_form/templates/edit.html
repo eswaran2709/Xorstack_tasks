@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update User</title>
+    <style>
+        body { 
+            font-family: sans-serif; 
+            background: #f8f9fa; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        .edit-container { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            width: 350px; 
+        }
+        h3 { color: #343a40; margin-top: 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input { 
+            width: 100%; 
+            padding: 10px; 
+            margin-bottom: 20px; 
+            border: 1px solid #dee2e6; 
+            border-radius: 5px; 
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+        }
+        .btn-save { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 10px 15px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            width: 100%; 
+            font-size: 16px; 
+        }
+        .btn-save:hover { background: #0056b3; }
+        .cancel-link { 
+            display: block; 
+            text-align: center; 
+            margin-top: 15px; 
+            color: #6c757d; 
+            text-decoration: none; 
+            font-size: 14px; 
+        }
+        .cancel-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="edit-container">
+    <h3>Update User Details</h3>
+    <form action="/update" method="POST">
+        <input type="hidden" name="id" value="{{ user.id }}">
+        
+        <label>Full Name</label>
+        <input type="text" name="name" value="{{ user.name }}" required>
+        
+        <label>Email Address</label>
+        <input type="email" name="email" value="{{ user.email }}" required>
+        
+        <button type="submit" class="btn-save">Save Changes</button>
+        <a href="/" class="cancel-link">Cancel and Go Back</a>
+    </form>
+</div>
+
+</body>
+</html>

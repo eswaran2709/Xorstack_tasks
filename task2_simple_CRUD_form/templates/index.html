@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Professional CRUD Dashboard</title>
+    <style>
+        body { font-family: sans-serif; background: #f8f9fa; margin: 40px; }
+        .alert { background: #d4edda; color: #155724; padding: 10px; margin-bottom: 20px; border-radius: 5px; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { padding: 12px; border: 1px solid #dee2e6; text-align: left; }
+        th { background: #343a40; color: white; }
+        .btn { text-decoration: none; padding: 5px 10px; border-radius: 3px; color: white; }
+        .edit-btn { background: #ffc107; color: black; }
+        .delete-btn { background: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <h2>User CRUD Management</h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form action="/add" method="POST" style="margin-bottom: 20px;">
+        <input type="text" name="name" placeholder="Name" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <button type="submit" style="background: #28a745; color: white; border: none; padding: 5px 15px; border-radius: 4px;">Create User</button>
+    </form>
+
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+                <a href="/edit/{{ user.id }}" class="btn edit-btn">Update</a>
+                <a href="/delete/{{ user.id }}" class="btn delete-btn" onclick="return confirm('Are you sure?')">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>
