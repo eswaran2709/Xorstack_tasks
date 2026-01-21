@@ -6,7 +6,7 @@ import os
 
 app = Flask(__name__)
 
-# --- SCRAPING LOGIC ---
+
 def scrape_stackoverflow():
     url = "https://stackoverflow.com/questions/tagged/python?tab=newest&pagesize=50"
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
@@ -32,7 +32,7 @@ def scrape_stackoverflow():
                 "link": full_link
             })
         
-        # Save a local copy
+        
         save_to_csv(data_list)
         return data_list
     except Exception as e:
@@ -47,14 +47,13 @@ def save_to_csv(data):
         dict_writer.writeheader()
         dict_writer.writerows(data)
 
-# --- ROUTES ---
 
 @app.route('/')
 def home():
     data = scrape_stackoverflow()
     return render_template('scraper_ui.html', questions=data)
 
-# NEW ROUTE: Download the CSV file
+
 @app.route('/download')
 def download_file():
     path = "scraped_questions.csv"
