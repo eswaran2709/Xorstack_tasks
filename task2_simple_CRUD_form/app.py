@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 import mysql.connector
 
 app = Flask(__name__)
-app.secret_key = "interview_task_key" # Required for flash messages
+app.secret_key = "interview_task_key" 
 
 DB_CONFIG = {
     "host": "127.0.0.1",
@@ -15,14 +15,14 @@ def get_db_connection():
     return mysql.connector.connect(**DB_CONFIG, database=DB_NAME)
 
 def init_db():
-    # Connect without DB to create the DB first
+    
     conn = mysql.connector.connect(**DB_CONFIG)
     cursor = conn.cursor()
     cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}")
     cursor.close()
     conn.close()
     
-    # Connect with DB to create the Table
+    
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
@@ -96,5 +96,5 @@ def delete_user(id):
 
 if __name__ == '__main__':
     init_db()
-    # use_reloader=False prevents the "Bad file descriptor" error on some Linux/Python setups
+    
     app.run(debug=True, use_reloader=False)
