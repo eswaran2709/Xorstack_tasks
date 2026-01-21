@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 app = Flask(__name__)
 
 def get_questions():
-    """Logic to scrape StackOverflow"""
+    
     url = "https://stackoverflow.com/questions/tagged/python"
     headers = {"User-Agent": "Mozilla/5.0"}
     
@@ -13,7 +13,7 @@ def get_questions():
         response = requests.get(url, headers=headers)
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Target the specific question title containers
+        
         question_tags = soup.find_all('h3', class_='s-post-summary--content-title')
         
         questions_list = []
@@ -28,7 +28,7 @@ def get_questions():
 
 @app.route('/')
 def home():
-    # Fetch questions to display on the main page
+    
     data = get_questions()
     return render_template('scraper_ui.html', questions=data)
 
