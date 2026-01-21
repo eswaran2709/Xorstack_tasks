@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Advanced Scraper Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; padding: 30px; }
+        .container { max-width: 1300px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        
+        .header-actions { float: right; display: flex; gap: 10px; }
+        
+        h1 { color: #f48024; margin-top: 0; }
+        
+        /* Buttons */
+        .btn { padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.9em; transition: 0.3s; border: none; cursor: pointer; }
+        .refresh-btn { background-color: #28a745; color: white; }
+        .download-btn { background-color: #f48024; color: white; }
+        .view-link { background-color: #0074cc; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 0.85em; }
+        
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; table-layout: fixed; }
+        th { background-color: #343a40; color: white; padding: 15px; text-align: left; }
+        td { padding: 15px; border-bottom: 1px solid #dee2e6; vertical-align: top; background: white; }
+
+        .desc-container { 
+            max-height: 100px; 
+            overflow-y: auto; 
+            font-size: 0.9em; 
+            color: #444; 
+            background: #fdfdfd; 
+            padding: 10px; 
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+
+        .tag-badge { 
+            background: #e1ecf4; color: #39739d; padding: 4px 10px; border-radius: 3px; 
+            font-size: 11px; font-weight: bold; margin: 0 5px 5px 0; display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-actions">
+        <a href="/" class="btn refresh-btn">🔄 Refresh Data</a>
+        <a href="/download" class="btn download-btn">📥 Download CSV</a>
+    </div>
+    
+    <h1>StackOverflow Explorer</h1>
+    <p>Live data extraction with full descriptions and keywords.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 5%">#</th>
+                <th style="width: 50%">Question & Description</th>
+                <th style="width: 25%">Keywords (Tags)</th>
+                <th style="width: 20%">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for q in questions %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>
+                    <strong style="display:block; margin-bottom:10px;">{{ q.title }}</strong>
+                    <div class="desc-container">
+                        {{ q.description }}
+                    </div>
+                </td>
+                <td>
+                    {% for tag in q.keywords.split(', ') %}
+                        <span class="tag-badge">{{ tag }}</span>
+                    {% endfor %}
+                </td>
+                <td>
+                    <a href="{{ q.link }}" target="_blank" class="view-link">View Original →</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
