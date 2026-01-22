@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col font-sans">
+    
+    <nav class="bg-indigo-700 text-white p-4 shadow-md flex justify-between items-center">
+        <h1 class="text-xl font-bold">Enterprise PDF Chat</h1>
+        <button onclick="syncDocs()" class="bg-indigo-500 hover:bg-indigo-400 px-4 py-2 rounded text-sm transition">
+            🔄 Sync Documents
+        </button>
+    </nav>
+
+    <div id="chat-box" class="flex-1 overflow-y-auto p-6 space-y-4">
+        <div class="flex justify-start">
+            <div class="bg-white border shadow-sm rounded-lg p-4 max-w-lg">
+                <p class="text-gray-800">Hello! Upload your PDFs to the <b>/data</b> folder and click <b>Sync</b>. Then ask me anything!</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="loader" class="hidden px-6 pb-2 text-indigo-600 text-sm animate-pulse">Bot is thinking...</div>
+
+    <div class="bg-white p-4 border-t">
+        <div class="max-w-4xl mx-auto flex gap-4">
+            <input type="text" id="user-input" 
+                class="flex-1 border border-gray-300 rounded-full px-6 py-3 focus:outline-none focus:border-indigo-500 shadow-sm" 
+                placeholder="Type your question here...">
+            <button onclick="sendQuery()" 
+                class="bg-indigo-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-indigo-700 transition shadow-md">
+                Send
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+        const loader = document.getElementById('loader');
+
+        async function syncDocs() {
+            alert("Syncing started. Check terminal for progress...");
+            const res = await fetch('/ingest', { method: 'POST' });
+            const data = await res.json();
+            alert(data.message);
+        }
+
+        async function sendQuery() {
+            const query = userInput.value.trim();
+            if (!query) return;
+
+            // Display User Message
+            appendMessage(query, 'user');
+            userInput.value = '';
+            loader.classList.remove('hidden');
+
+            try {
+                const res = await fetch('/ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: query })
+                });
+                const data = await res.json();
+                
+                // Display Bot Response
+                appendMessage(data.answer, 'bot', data.sources);
+            } catch (e) {
+                appendMessage("Error connecting to server.", 'bot', []);
+            } finally {
+                loader.classList.add('hidden');
+            }
+        }
+
+        function appendMessage(text, sender, sources = []) {
+            const div = document.createElement('div');
+            div.className = sender === 'user' ? 'flex justify-end' : 'flex justify-start';
+            
+            let sourceHtml = sources.length > 0 ? `<div class="mt-2 text-xs text-gray-400 italic">Sources: ${sources.join(', ')}</div>` : '';
+            
+            div.innerHTML = `
+                <div class="${sender === 'user' ? 'bg-indigo-600 text-white' : 'bg-white border text-gray-800'} shadow-sm rounded-2xl p-4 max-w-lg">
+                    <p>${text}</p>
+                    ${sourceHtml}
+                </div>
+            `;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Allow 'Enter' key to send
+        userInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") sendQuery();
+        });
+    </script>
+</body>
+</html>
